@@ -6,8 +6,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.stage.FileChooser;
 import javafx.util.Callback;
+import java.io.File;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.sql.*;
 import java.util.Optional;
 
@@ -22,10 +26,15 @@ public class MainController {
     @FXML private TextField nameField;
     @FXML private TextField emailField;
     @FXML private TextField searchField;
+    
 
     private static final String URL = "jdbc:mysql://localhost:3306/gestion_utilisateurs";
     private static final String USER = "root";
     private static final String PASSWORD = "";
+
+    @FXML
+private Button exportButton;
+
 
     @FXML
     private void initialize() {
@@ -41,26 +50,30 @@ public class MainController {
 
         // Ajouter boutons Supprimer
         deleteColumn.setCellFactory(createDeleteButtonCellFactory());
+
+         // Lier le bouton d'exportation CSV
+        exportButton.setOnAction(event -> exportToCSV());
     }
 
     private void loadUsersFromDatabase() {
-        ObservableList<User> users = FXCollections.observableArrayList();
+        userList.clear(); // Nettoyer la liste avant d'ajouter les nouveaux utilisateurs
         String sql = "SELECT * FROM users";
-
+    
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
-
+    
             while (rs.next()) {
-                users.add(new User(rs.getInt("id"), rs.getString("name"), rs.getString("email")));
+                userList.add(new User(rs.getInt("id"), rs.getString("name"), rs.getString("email")));
             }
-            tableView.setItems(users);
-
+            tableView.setItems(userList); // Mettre à jour la TableView
+    
         } catch (SQLException e) {
             showAlert("Erreur", "Impossible de charger les utilisateurs : " + e.getMessage());
             e.printStackTrace();
         }
     }
+    
 
     @FXML
     private void addUser() {
@@ -241,4 +254,32 @@ public class MainController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    private ObservableList<User> userList = FXCollections.observableArrayList();
+
+    private void exportToCSV() {
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Enregistrer le fichier CSV");
+    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers CSV", "*.csv"));
+    File file = fileChooser.showSaveDialog(null);
+    
+    if (file != null) {
+        try (PrintWriter writer = new PrintWriter(file)) {
+            // Écrire l'en-tête
+            writer.println("ID,Nom,Email");
+
+            // Écrire les utilisateurs
+            for (User user : userList) {
+                writer.println(user.getId() + "," + user.getName() + "," + user.getEmail());
+            }
+
+            System.out.println("Exportation réussie !");
+            showAlert("Succès", "Fichier CSV exporté avec succès !");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible d'exporter le fichier CSV !");
+        }
+    }
+}
+
 }

@@ -11,11 +11,13 @@
 
 
     
-    <!-- Barre de recherche -->
-    <HBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
-        <TextField fx:id="searchField" promptText="Rechercher par nom ou email..." />
-        <Button text="🔍" onAction="#searchUser" />
-    </HBox>
+    <!-- Barre de recherche avec bouton Exporter CSV -->
+<HBox spacing="10" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="0">
+    <TextField fx:id="searchField" promptText="Rechercher par nom ou email..." />
+    <Button text="🔍" onAction="#searchUser" />
+    <Button fx:id="exportButton" text="Exporter CSV" />
+</HBox>
+
     
     <!-- TableView des utilisateurs -->
     <TableView fx:id="tableView" GridPane.columnIndex="0" GridPane.rowIndex="1" VBox.vgrow="ALWAYS">
@@ -34,5 +36,7 @@
         <TextField fx:id="emailField" promptText="Email" />
         <Button text="Ajouter" onAction="#addUser" />
     </HBox>
+    
+
     
 </GridPane>
