@@ -19,13 +19,7 @@ public class UserManagementApp extends Application {
     private TextField nameField = new TextField();
     private TextField emailField = new TextField();
     private TextField searchField = new TextField();
-    private Label userCountLabel = new Label("Nombre d'utilisateurs : 0");
-    private Button themeButton;
-    private HBox inputBox;
-    private VBox layout;
-
-
-
+    
 
     private static final String URL = "jdbc:mysql://localhost:3306/gestion_utilisateurs";
     private static final String USER = "root";
@@ -44,16 +38,6 @@ public class UserManagementApp extends Application {
 
         HBox searchBox = new HBox(5, searchField, searchButton);
         searchBox.setAlignment(Pos.CENTER);
-        themeButton = new Button("Mode Sombre");
-        inputBox = new HBox(10);
-        layout = new VBox(10);
-
-
-        layout.getChildren().addAll(themeButton, searchBox, userCountLabel, table, inputBox);
-
-
-
-
 
         // Colonnes de la table
         TableColumn<User, Integer> idColumn = new TableColumn<>("ID");
@@ -124,7 +108,6 @@ public class UserManagementApp extends Application {
 
         // Charger les utilisateurs depuis la base de données
         loadUsersFromDatabase();
-        updateUserCount(); 
 
         VBox layout = new VBox(10, searchBox, table, inputBox);
         layout.setAlignment(Pos.CENTER);
@@ -176,7 +159,6 @@ public class UserManagementApp extends Application {
             nameField.clear();
             emailField.clear();
             loadUsersFromDatabase();
-            updateUserCount(); 
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -219,7 +201,6 @@ public class UserManagementApp extends Application {
 
             showAlert("Succès", "Utilisateur mis à jour !");
             loadUsersFromDatabase();
-            updateUserCount(); 
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -246,7 +227,6 @@ public class UserManagementApp extends Application {
 
                 showAlert("Succès", "Utilisateur supprimé !");
                 loadUsersFromDatabase();
-                updateUserCount(); 
 
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -286,24 +266,6 @@ public class UserManagementApp extends Application {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
-    private void updateUserCount() {
-        String sql = "SELECT COUNT(*) FROM users";
-        
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            
-            if (rs.next()) {
-                int count = rs.getInt(1);
-                userCountLabel.setText("Nombre d'utilisateurs : " + count);
-            }
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-    
 
     public static void main(String[] args) {
         launch(args);
