@@ -132,7 +132,7 @@ private Button exportButton;
 
     private Callback<TableColumn<User, Void>, TableCell<User, Void>> createEditButtonCellFactory() {
         return param -> new TableCell<>() {
-            private final Button editButton = new Button("✏ Modifier");
+            private final Button editButton = new Button("✏");
 
             {
                 editButton.setOnAction(event -> {
@@ -151,7 +151,7 @@ private Button exportButton;
 
     private Callback<TableColumn<User, Void>, TableCell<User, Void>> createDeleteButtonCellFactory() {
         return param -> new TableCell<>() {
-            private final Button deleteButton = new Button("🗑 Supprimer");
+            private final Button deleteButton = new Button("🗑");
 
             {
                 deleteButton.setOnAction(event -> {
